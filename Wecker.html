@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Messe Wecker - Baris</title>
+    <style>
+        body {
+            background: #111;
+            color: #00ffcc;
+            font-family: Courier New, monospace;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .box {
+            border: 3px dashed #00ffcc;
+            padding: 25px;
+            width: 300px;
+            margin: 0 auto;
+            background-color: #1a1a1a;
+        }
+
+        #uhr {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #ffffff;
+        }
+
+        input {
+            padding: 8px;
+            width: 80%;
+            margin-bottom: 10px;
+            background: #222;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            font-family: monospace;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #00ffcc;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            width: 85%;
+        }
+
+        button:hover {
+            background: #00b38f;
+        }
+
+        .alarm-aktiv {
+            background: red !important;
+            color: white !important;
+        }
+
+        .klingelt {
+            animation: rütteln 0.1s infinite;
+        }
+
+        @keyframes rütteln {
+            0% { transform: translate(5px, 0); }
+            50% { transform: translate(-5px, 0); }
+            100% { transform: translate(5px, 0); }
+        }
+
+        .credits {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box" id="hauptBox">
+        <h2>Messe Wecker von Baris</h2>
+        
+        <div id="uhr">00:00:00</div>
+
+        <input type="time" id="weckerZeit"><br>
+        <button id="alarmBtn" onclick="weckerSchalten()">Wecker stellen</button>
+        
+        <div id="status" style="margin-top: 10px; color: yellow;">Kein Wecker aktiv</div>
+
+        <div class="credits">
+            Coded by Baris (Don't touch)
+        </div>
+    </div>
+
+    <script>
+        var zielZeit = null
+        var weckerLaeuft = false
+
+        function tick() {
+            var d = new Date()
+            var h = d.getHours()
+            var m = d.getMinutes()
+            var s = d.getSeconds()
+
+            if (h == 12) {
+                h = 13
+            }
+
+            var hStr = h;
+            if(h < 10) { 
+                hStr = "0" + h; 
+            }
+
+            var mStr = m;
+            if(m < 10) { 
+                mStr = "0" + m; 
+            }
+
+            var sStr = s;
+            if(s < 10) { 
+                sStr = "0" + s; 
+            }
+
+            var aktuelleZeit = hStr + ":" + mStr + ":" + sStr
+            document.getElementById('uhr').innerHTML = aktuelleZeit
+
+            var stundenMinuten = hStr + ":" + mStr
+            
+            if (weckerLaeuft == true && zielZeit == stundenMinuten) {
+                alarmAusloesen()
+            }
+        }
+
+        setInterval(tick, 1000)
+        tick()
+
+        function weckerSchalten() {
+            var eingabe = document.getElementById("weckerZeit").value
+            var btn = document.getElementById('alarmBtn')
+            var statusText = document.getElementById("status")
+
+            if (weckerLaeuft == false) {
+                if (eingabe == "") {
+                    alert("Bruder, wähl mal eine Zeit aus!")
+                    return
+                }
+                zielZeit = eingabe
+                weckerLaeuft = true
+                btn.innerHTML = "Wecker ausschalten"
+                btn.classList.add('alarm-aktiv')
+                statusText.innerHTML = "Aktiv für: " + zielZeit
+            } else {
+                weckerLaeuft = false
+                zielZeit = null
+                btn.innerHTML = 'Wecker stellen'
+                btn.classList.remove('alarm-aktiv')
+                document.getElementById('hauptBox').classList.remove('klingelt')
+                statusText.innerHTML = "Kein Wecker aktiv"
+            }
+        }
+
+        function alarmAusloesen() {
+            document.getElementById("hauptBox").classList.add("klingelt")
+            document.getElementById("status").innerHTML = "ALARM! WECK AUF! ⏰"
+            
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+                var osc = audioCtx.createOscillator()
+                osc.type = 'square'
+                osc.frequency.value = 800
+                osc.connect(audioCtx.destination)
+                osc.start()
+                osc.stop(audioCtx.currentTime + 0.2)
+            } catch(e) {
+                console.log("Audio geht net")
+            }
+        }
+    </script>
+</body>
+</html>
+

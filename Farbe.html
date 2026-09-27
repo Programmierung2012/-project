@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ColorStream - Baris</title>
+    <style>
+        body {
+            background-color: #050315;
+            color: #ffffff;
+            font-family: Courier New, monospace;
+            text-align: center;
+            margin-top: 150px;
+            transition: background 2s;
+        }
+
+        .box {
+            border: 4px dashed #00ff66;
+            padding: 30px;
+            width: 350px;
+            margin: 0 auto;
+            background: #111;
+        }
+
+        #hex {
+            font-size: 45px;
+            font-weight: bold;
+            color: #00ff66;
+            margin-top: 15px;
+        }
+
+        .credits {
+            margin-top: 30px;
+            font-size: 10px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h3>Color Stream v0.9</h3>
+        <p style="font-size: 12px; color: #aaa;">by Baris A.</p>
+        
+        <div id="hex">#050315</div>
+    </div>
+
+    <div class="credits">
+        Läuft automatisch alle paar Sekunden lol
+    </div>
+
+    <script>
+        var farben = [
+            "#0A0229", 
+            "#2A0954", 
+            "#47107A", 
+            "#080859", 
+            "#034161", 
+            "#007791", 
+            "#169873", 
+            "#00C98C", 
+            "#00FF66"
+        ];
+
+        var index = 0;
+        
+        function farbWechsel() {
+            document.body.style.background = farben[index];
+            document.getElementById("hex").innerHTML = farben[index];
+            
+            index = index + 1;
+            
+            if (index >= farben.length) {
+                index = 0;
+            }
+        }
+        
+        setInterval(farbWechsel, 3500);
+        
+        console.log("Script läuft, bruder.");
+    </script>
+</body>
+</html>
+
